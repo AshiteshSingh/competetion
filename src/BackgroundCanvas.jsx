@@ -18,14 +18,15 @@ export default function BackgroundCanvas() {
     };
     window.addEventListener('resize', handleResize);
 
-    // Particles system
+    // Particles system - Solarized Dark Palette
     const particleCount = 70;
     const particles = [];
     const colors = [
-      'rgba(239, 71, 58, 0.6)',   // Red
-      'rgba(0, 168, 255, 0.6)',   // Blue
-      'rgba(255, 215, 0, 0.6)',   // Yellow
-      'rgba(56, 239, 125, 0.6)',  // Green
+      'rgba(220, 50, 47, 0.7)',   // Solarized Red
+      'rgba(38, 139, 210, 0.7)',  // Solarized Blue
+      'rgba(181, 137, 0, 0.7)',   // Solarized Yellow
+      'rgba(133, 153, 0, 0.7)',   // Solarized Green
+      'rgba(42, 161, 152, 0.7)',  // Solarized Cyan
     ];
 
     for (let i = 0; i < particleCount; i++) {
@@ -48,7 +49,7 @@ export default function BackgroundCanvas() {
       time += 0.015;
       ctx.clearRect(0, 0, width, height);
 
-      // Deep dark cyber background gradient
+      // Solarized Dark Base03 (#002b36) to Base02 (#073642) background gradient
       const bgGrad = ctx.createRadialGradient(
         width / 2,
         height / 2,
@@ -57,43 +58,43 @@ export default function BackgroundCanvas() {
         height / 2,
         Math.max(width, height) * 0.8
       );
-      bgGrad.addColorStop(0, '#0a0d18');
-      bgGrad.addColorStop(0.5, '#05070e');
-      bgGrad.addColorStop(1, '#020306');
+      bgGrad.addColorStop(0, '#073642');
+      bgGrad.addColorStop(0.5, '#002b36');
+      bgGrad.addColorStop(1, '#001e26');
       ctx.fillStyle = bgGrad;
       ctx.fillRect(0, 0, width, height);
 
-      // 4 Ambient Neon Corner Flares (matching Red, Blue, Yellow, Green houses)
-      // Top-Left (RED)
+      // 4 Ambient Solarized Corner Flares (matching Red, Blue, Yellow, Green houses)
+      // Top-Left (RED: #dc322f)
       const redGlow = ctx.createRadialGradient(0, 0, 10, 0, 0, width * 0.45);
-      redGlow.addColorStop(0, 'rgba(239, 71, 58, 0.12)');
-      redGlow.addColorStop(1, 'rgba(239, 71, 58, 0)');
+      redGlow.addColorStop(0, 'rgba(220, 50, 47, 0.16)');
+      redGlow.addColorStop(1, 'rgba(220, 50, 47, 0)');
       ctx.fillStyle = redGlow;
       ctx.fillRect(0, 0, width * 0.5, height * 0.5);
 
-      // Top-Right (BLUE)
+      // Top-Right (BLUE: #268bd2)
       const blueGlow = ctx.createRadialGradient(width, 0, 10, width, 0, width * 0.45);
-      blueGlow.addColorStop(0, 'rgba(0, 168, 255, 0.14)');
-      blueGlow.addColorStop(1, 'rgba(0, 168, 255, 0)');
+      blueGlow.addColorStop(0, 'rgba(38, 139, 210, 0.18)');
+      blueGlow.addColorStop(1, 'rgba(38, 139, 210, 0)');
       ctx.fillStyle = blueGlow;
       ctx.fillRect(width * 0.5, 0, width * 0.5, height * 0.5);
 
-      // Bottom-Left (YELLOW)
+      // Bottom-Left (YELLOW: #b58900)
       const yellowGlow = ctx.createRadialGradient(0, height, 10, 0, height, width * 0.45);
-      yellowGlow.addColorStop(0, 'rgba(255, 215, 0, 0.10)');
-      yellowGlow.addColorStop(1, 'rgba(255, 215, 0, 0)');
+      yellowGlow.addColorStop(0, 'rgba(181, 137, 0, 0.15)');
+      yellowGlow.addColorStop(1, 'rgba(181, 137, 0, 0)');
       ctx.fillStyle = yellowGlow;
       ctx.fillRect(0, height * 0.5, width * 0.5, height * 0.5);
 
-      // Bottom-Right (GREEN)
+      // Bottom-Right (GREEN: #859900)
       const greenGlow = ctx.createRadialGradient(width, height, 10, width, height, width * 0.45);
-      greenGlow.addColorStop(0, 'rgba(56, 239, 125, 0.12)');
-      greenGlow.addColorStop(1, 'rgba(56, 239, 125, 0)');
+      greenGlow.addColorStop(0, 'rgba(133, 153, 0, 0.16)');
+      greenGlow.addColorStop(1, 'rgba(133, 153, 0, 0)');
       ctx.fillStyle = greenGlow;
       ctx.fillRect(width * 0.5, height * 0.5, width * 0.5, height * 0.5);
 
-      // Subtle cyber grid
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.025)';
+      // Subtle Solarized Base01 grid lines
+      ctx.strokeStyle = 'rgba(88, 110, 117, 0.08)';
       ctx.lineWidth = 1;
       const gridSize = 45;
       for (let x = 0; x < width; x += gridSize) {

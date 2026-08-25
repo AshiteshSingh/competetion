@@ -15,10 +15,10 @@ const DEFAULT_SCORES = {
 };
 
 const BASE_HOUSES = [
-  { key: 'red', name: 'RED', color: '#ef473a', borderGlow: 'rgba(239, 71, 58, 0.7)', code: 'RED-01', defaultOrder: 1 },
-  { key: 'blue', name: 'BLUE', color: '#00a8ff', borderGlow: 'rgba(0, 168, 255, 0.7)', code: 'BLU-02', defaultOrder: 2 },
-  { key: 'yellow', name: 'YELLOW', color: '#ffd700', borderGlow: 'rgba(255, 215, 0, 0.7)', code: 'YEL-03', defaultOrder: 3 },
-  { key: 'green', name: 'GREEN', color: '#38ef7d', borderGlow: 'rgba(56, 239, 125, 0.7)', code: 'GRN-04', defaultOrder: 4 },
+  { key: 'red', name: 'RED', color: '#dc322f', borderGlow: 'rgba(220, 50, 47, 0.75)', code: 'RED-01', defaultOrder: 1 },
+  { key: 'blue', name: 'BLUE', color: '#268bd2', borderGlow: 'rgba(38, 139, 210, 0.75)', code: 'BLU-02', defaultOrder: 2 },
+  { key: 'yellow', name: 'YELLOW', color: '#b58900', borderGlow: 'rgba(181, 137, 0, 0.75)', code: 'YEL-03', defaultOrder: 3 },
+  { key: 'green', name: 'GREEN', color: '#859900', borderGlow: 'rgba(133, 153, 0, 0.75)', code: 'GRN-04', defaultOrder: 4 },
 ];
 
 // Smooth Rolling Number Counter Component

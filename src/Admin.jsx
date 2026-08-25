@@ -12,10 +12,10 @@ const DEFAULT_SCORES = {
 };
 
 const HOUSES = [
-  { key: 'red', name: 'RED', color: '#ef473a' },
-  { key: 'blue', name: 'BLUE', color: '#00a8ff' },
-  { key: 'yellow', name: 'YELLOW', color: '#ffd700' },
-  { key: 'green', name: 'GREEN', color: '#38ef7d' },
+  { key: 'red', name: 'RED', color: '#dc322f' },
+  { key: 'blue', name: 'BLUE', color: '#268bd2' },
+  { key: 'yellow', name: 'YELLOW', color: '#b58900' },
+  { key: 'green', name: 'GREEN', color: '#859900' },
 ];
 
 export default function Admin() {
