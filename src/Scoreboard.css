@@ -43,7 +43,7 @@
   position: relative;
   z-index: 10;
   text-align: center;
-  padding: 20px 0;
+  padding: 2vh 0;
   background: linear-gradient(180deg, #0f1423 0%, rgba(15, 20, 35, 0) 100%);
   border-bottom: 2px solid rgba(255,255,255,0.05);
 }
@@ -51,8 +51,8 @@
 .board-header h1 {
   font-family: 'Inter', sans-serif;
   font-weight: 900;
-  font-size: 3rem;
-  letter-spacing: 15px;
+  font-size: 5vh;
+  letter-spacing: 1vw;
   margin: 0;
   background: linear-gradient(90deg, #fff, #8892b0);
   -webkit-background-clip: text;
@@ -66,10 +66,11 @@
   z-index: 10;
   flex: 1;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
-  padding: 40px;
-  gap: 40px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+  padding: 2vh 4vw;
+  gap: 2vh 4vw;
+  min-height: 0; /* Important for preventing grid blowout */
 }
 
 /* Grid Cells (Houses) */
@@ -86,6 +87,7 @@
   position: relative;
   overflow: hidden;
   transition: transform 0.2s ease;
+  min-height: 0;
 }
 
 .grid-cell::before {
@@ -105,9 +107,9 @@
 .house-name {
   font-family: 'Inter', sans-serif;
   font-weight: 800;
-  font-size: 4rem;
+  font-size: 6vh;
   letter-spacing: 4px;
-  margin-bottom: 20px;
+  margin-bottom: 2vh;
   text-shadow: 2px 2px 10px rgba(0,0,0,0.8);
 }
 
@@ -121,8 +123,8 @@
   background: rgba(0,0,0,0.6);
   border: 2px solid rgba(255,255,255,0.1);
   border-radius: 15px;
-  min-width: 300px;
-  height: 180px;
+  width: 50%;
+  height: 20vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -136,12 +138,13 @@
 .green-cell .score-box { border-color: rgba(56, 239, 125, 0.4); box-shadow: inset 0 0 20px rgba(56, 239, 125, 0.1); }
 
 .score-value {
-  font-size: 10rem;
+  font-size: 16vh;
   line-height: 1;
   font-weight: 700;
   color: #fff;
   transition: all 0.2s;
   font-variant-numeric: tabular-nums;
+  margin-top: -1vh;
 }
 
 /* Flash Animation when score changes */
@@ -174,8 +177,8 @@
 
 /* Responsive */
 @media (max-width: 1024px) {
-  .house-name { font-size: 3rem; }
-  .score-value { font-size: 8rem; }
-  .score-box { min-width: 200px; height: 140px; }
-  .board-header h1 { font-size: 2rem; }
+  .house-name { font-size: 5vh; }
+  .score-value { font-size: 12vh; }
+  .score-box { width: 70%; height: 16vh; }
+  .board-header h1 { font-size: 4vh; }
 }
