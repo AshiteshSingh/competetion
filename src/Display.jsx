@@ -1,27 +1,11 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
-import { Volume2, VolumeX, Maximize, Minimize, Settings, Sparkles, Trophy, Crown } from 'lucide-react';
+import { Trophy, Crown, Maximize, Minimize } from 'lucide-react';
 import BackgroundCanvas from './BackgroundCanvas';
 import { HouseIcon } from './HouseIcons';
 import { soundFX } from './sound';
 import './Scoreboard.css';
-
-const DEFAULT_CONFIG = {
-  eventName: 'INTER-HOUSE CHAMPIONSHIP',
-  subtitle: 'ANNUAL SPORTS & ACADEMIC COMPETITION 2026',
-  houseNames: {
-    red: 'RED PHOENIX',
-    blue: 'BLUE TITANS',
-    yellow: 'YELLOW SUNS',
-    green: 'GREEN HYDRAS',
-  },
-  taglines: {
-    red: 'IGNITE THE FIRE',
-    blue: 'STRIKE LIKE LIGHTNING',
-    yellow: 'RISE AND SHINE',
-    green: 'UNLEASH THE POWER',
-  }
-};
 
 const DEFAULT_SCORES = {
   red: 0,
@@ -30,8 +14,15 @@ const DEFAULT_SCORES = {
   green: 0,
 };
 
+const BASE_HOUSES = [
+  { key: 'red', name: 'RED', color: '#ef473a', borderGlow: 'rgba(239, 71, 58, 0.7)', code: 'RED-01', defaultOrder: 1 },
+  { key: 'blue', name: 'BLUE', color: '#00a8ff', borderGlow: 'rgba(0, 168, 255, 0.7)', code: 'BLU-02', defaultOrder: 2 },
+  { key: 'yellow', name: 'YELLOW', color: '#ffd700', borderGlow: 'rgba(255, 215, 0, 0.7)', code: 'YEL-03', defaultOrder: 3 },
+  { key: 'green', name: 'GREEN', color: '#38ef7d', borderGlow: 'rgba(56, 239, 125, 0.7)', code: 'GRN-04', defaultOrder: 4 },
+];
+
 // Smooth Rolling Number Counter Component
-function RollingCounter({ value, color }) {
+function RollingCounter({ value }) {
   const [displayValue, setDisplayValue] = useState(value);
   const [isPulsing, setIsPulsing] = useState(false);
   const animFrameRef = useRef(null);
@@ -40,17 +31,16 @@ function RollingCounter({ value, color }) {
     if (value === displayValue) return;
 
     setIsPulsing(true);
-    const pulseTimer = setTimeout(() => setIsPulsing(false), 600);
+    const pulseTimer = setTimeout(() => setIsPulsing(false), 500);
 
     const startVal = displayValue;
     const endVal = value;
-    const duration = 500; // ms
+    const duration = 400; // ms
     const startTime = performance.now();
 
     const updateNumber = (now) => {
       const elapsed = now - startTime;
       const progress = Math.min(elapsed / duration, 1);
-      // Ease out cubic
       const ease = 1 - Math.pow(1 - progress, 3);
       const current = Math.round(startVal + (endVal - startVal) * ease);
       setDisplayValue(current);
@@ -76,16 +66,16 @@ function RollingCounter({ value, color }) {
 }
 
 // Glowing Rain / Particle Matrix inside each card
-function EnergyRain({ color, houseKey }) {
+function EnergyRain({ color }) {
   const particles = useRef(
-    Array.from({ length: 18 }).map((_, i) => ({
+    Array.from({ length: 16 }).map((_, i) => ({
       id: i,
-      left: `${(i / 18) * 100 + (Math.random() * 5 - 2.5)}%`,
+      left: `${(i / 16) * 100 + (Math.random() * 4 - 2)}%`,
       duration: `${1.2 + Math.random() * 1.8}s`,
       delay: `${Math.random() * 2}s`,
       opacity: 0.25 + Math.random() * 0.6,
-      width: `${2 + Math.random() * 2.5}px`,
-      height: `${20 + Math.random() * 35}px`,
+      width: `${2 + Math.random() * 2}px`,
+      height: `${18 + Math.random() * 30}px`,
     }))
   ).current;
 
@@ -113,48 +103,42 @@ function EnergyRain({ color, houseKey }) {
 
 export default function Display() {
   const [scores, setScores] = useState(DEFAULT_SCORES);
-  const [config, setConfig] = useState(DEFAULT_CONFIG);
   const [currentTime, setCurrentTime] = useState('');
   const [currentDate, setCurrentDate] = useState('');
-  const [soundEnabled, setSoundEnabled] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const prevScoresRef = useRef(DEFAULT_SCORES);
   const prevLeaderRef = useRef(null);
 
-  // Load scores & config from localStorage
-  const loadData = () => {
+  // BroadcastChannel for instant cross-tab sync
+  const channelRef = useRef(null);
+
+  const loadScores = () => {
     try {
       const savedScores = localStorage.getItem('houseScores');
       if (savedScores) setScores(JSON.parse(savedScores));
-
-      const savedConfig = localStorage.getItem('scoreboardConfig');
-      if (savedConfig) setConfig({ ...DEFAULT_CONFIG, ...JSON.parse(savedConfig) });
-
-      const savedSound = localStorage.getItem('scoreboardSound');
-      if (savedSound !== null) {
-        const enabled = savedSound === 'true';
-        setSoundEnabled(enabled);
-        soundFX.enabled = enabled;
-      }
     } catch (e) {
       console.error(e);
     }
   };
 
   useEffect(() => {
-    loadData();
+    loadScores();
+
+    // Setup BroadcastChannel for 0ms cross-window communication
+    if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
+      channelRef.current = new BroadcastChannel('scoreboard_sync_channel');
+      channelRef.current.onmessage = (event) => {
+        if (event.data && event.data.type === 'UPDATE_SCORES') {
+          setScores(event.data.scores);
+        } else if (event.data && event.data.type === 'CONFETTI') {
+          triggerVictoryConfetti();
+        }
+      };
+    }
 
     const handleStorage = (e) => {
       if (e.key === 'houseScores' && e.newValue) {
         setScores(JSON.parse(e.newValue));
-      }
-      if (e.key === 'scoreboardConfig' && e.newValue) {
-        setConfig({ ...DEFAULT_CONFIG, ...JSON.parse(e.newValue) });
-      }
-      if (e.key === 'scoreboardSound') {
-        const enabled = e.newValue === 'true';
-        setSoundEnabled(enabled);
-        soundFX.enabled = enabled;
       }
       if (e.key === 'triggerConfetti') {
         triggerVictoryConfetti();
@@ -162,19 +146,20 @@ export default function Display() {
     };
 
     window.addEventListener('storage', handleStorage);
-    return () => window.removeEventListener('storage', handleStorage);
+    return () => {
+      window.removeEventListener('storage', handleStorage);
+      if (channelRef.current) channelRef.current.close();
+    };
   }, []);
 
   // Audio & Confetti response on score change
   useEffect(() => {
     const prev = prevScoresRef.current;
     let scoreIncreased = false;
-    let maxIncreasedHouse = null;
 
     Object.keys(scores).forEach((key) => {
       if (scores[key] > (prev[key] || 0)) {
         scoreIncreased = true;
-        maxIncreasedHouse = key;
       }
     });
 
@@ -246,14 +231,6 @@ export default function Display() {
     });
   };
 
-  // Toggle Sound
-  const toggleSound = () => {
-    const next = !soundEnabled;
-    setSoundEnabled(next);
-    soundFX.enabled = next;
-    localStorage.setItem('scoreboardSound', String(next));
-  };
-
   // Toggle Fullscreen
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
@@ -265,12 +242,18 @@ export default function Display() {
     }
   };
 
-  // Compute live ranks and lead info
-  const sortedHouses = Object.entries(scores).sort((a, b) => b[1] - a[1]);
-  const ranks = {};
-  sortedHouses.forEach(([house], index) => {
-    ranks[house] = index + 1; // 1st, 2nd, 3rd, 4th
-  });
+  // DYNAMIC SORTING: Sort houses by score descending (highest score first)
+  // Top-Left = 1st, Top-Right = 2nd, Bottom-Left = 3rd, Bottom-Right = 4th
+  const sortedHouses = useMemo(() => {
+    return [...BASE_HOUSES].sort((a, b) => {
+      const scoreA = Number(scores[a.key]) || 0;
+      const scoreB = Number(scores[b.key]) || 0;
+      if (scoreB !== scoreA) {
+        return scoreB - scoreA; // Highest score first
+      }
+      return a.defaultOrder - b.defaultOrder; // Preserves stable initial order when tied
+    });
+  }, [scores]);
 
   const getRankBadge = (rank) => {
     if (rank === 1) return { label: '1ST PLACE', icon: <Crown size={18} className="crown-icon" />, className: 'rank-1' };
@@ -279,13 +262,6 @@ export default function Display() {
     return { label: '4TH PLACE', icon: null, className: 'rank-4' };
   };
 
-  const housesConfig = [
-    { key: 'red', color: '#ef473a', borderGlow: 'rgba(239, 71, 58, 0.7)', code: 'RED-01' },
-    { key: 'blue', color: '#00a8ff', borderGlow: 'rgba(0, 168, 255, 0.7)', code: 'BLU-02' },
-    { key: 'yellow', color: '#ffd700', borderGlow: 'rgba(255, 215, 0, 0.7)', code: 'YEL-03' },
-    { key: 'green', color: '#38ef7d', borderGlow: 'rgba(56, 239, 125, 0.7)', code: 'GRN-04' },
-  ];
-
   return (
     <div className="scoreboard-master-container">
       {/* Interactive Nebula & Constellation Canvas */}
@@ -293,10 +269,11 @@ export default function Display() {
 
       {/* Dynamic Top Broadcast Header */}
       <header className="broadcast-header">
+        {/* Top Left: LIVE + Clock */}
         <div className="header-left">
           <div className="live-badge">
             <span className="live-radar-ping"></span>
-            <span className="live-text">LIVE MATCH</span>
+            <span className="live-text">LIVE</span>
           </div>
           <div className="clock-widget">
             <span className="time-display">{currentTime}</span>
@@ -304,53 +281,50 @@ export default function Display() {
           </div>
         </div>
 
+        {/* Top Center: Clean Event Title */}
         <div className="header-center">
-          <div className="event-title-badge">
-            <Sparkles size={16} className="sparkle-icon" />
-            <span>OFFICIAL LEADERBOARD</span>
-            <Sparkles size={16} className="sparkle-icon" />
-          </div>
-          <h1 className="competition-title">{config.eventName}</h1>
-          <p className="competition-subtitle">{config.subtitle}</p>
+          <h1 className="competition-title">INTER-HOUSE CHAMPIONSHIP</h1>
         </div>
 
+        {/* Top Right: Profile of Black & White Photo of Man */}
         <div className="header-right">
-          <button className="control-icon-btn" onClick={toggleSound} title={soundEnabled ? 'Mute Sound' : 'Enable Sound'}>
-            {soundEnabled ? <Volume2 size={20} /> : <VolumeX size={20} />}
+          <div className="profile-container" title="Chief Referee / Official Profile">
+            <img src="/avatar.jpg" alt="Profile" className="profile-avatar-img" />
+            <div className="profile-badge-ring"></div>
+          </div>
+          <button className="control-icon-btn fullscreen-btn" onClick={toggleFullscreen} title="Toggle Fullscreen (F11)">
+            {isFullscreen ? <Minimize size={18} /> : <Maximize size={18} />}
           </button>
-          <button className="control-icon-btn" onClick={toggleFullscreen} title="Toggle Fullscreen">
-            {isFullscreen ? <Minimize size={20} /> : <Maximize size={20} />}
-          </button>
-          <a href="/admin" target="_blank" rel="noreferrer" className="control-icon-btn" title="Open Admin Control Panel">
-            <Settings size={20} />
-          </a>
         </div>
       </header>
 
-      {/* 2x2 Cyber Sports Grid */}
+      {/* 2x2 Cyber Sports Grid with Smooth Layout Animation */}
       <main className="cyber-grid-container">
-        {housesConfig.map(({ key, color, borderGlow, code }) => {
-          const score = scores[key] || 0;
-          const rank = ranks[key] || 4;
+        {sortedHouses.map((house, index) => {
+          const rank = index + 1; // 1st (Top-Left), 2nd (Top-Right), 3rd (Bottom-Left), 4th (Bottom-Right)
+          const score = scores[house.key] || 0;
           const rankBadge = getRankBadge(rank);
-          const houseName = (config.houseNames && config.houseNames[key]) || key.toUpperCase();
-          const tagline = (config.taglines && config.taglines[key]) || '';
           const isLeader = rank === 1 && score > 0;
 
           return (
-            <div
-              key={key}
-              className={`cyber-house-card ${key}-card ${isLeader ? 'leader-card' : ''}`}
-              style={{ '--house-color': color, '--house-glow': borderGlow }}
+            <motion.div
+              layout
+              key={house.key}
+              transition={{
+                layout: { type: 'spring', stiffness: 220, damping: 28 },
+                duration: 0.6,
+              }}
+              className={`cyber-house-card ${house.key}-card ${isLeader ? 'leader-card' : ''}`}
+              style={{ '--house-color': house.color, '--house-glow': house.borderGlow }}
             >
               {/* Energy Matrix Rain Backdrop */}
-              <EnergyRain color={color} houseKey={key} />
+              <EnergyRain color={house.color} />
 
-              {/* Card Ambient Header */}
+              {/* Card Top Bar */}
               <div className="card-top-bar">
                 <div className="house-badge-pill">
-                  <HouseIcon house={key} className="house-crest-icon" />
-                  <span className="house-code-tag">{code}</span>
+                  <HouseIcon house={house.key} className="house-crest-icon" />
+                  <span className="house-code-tag">{house.code}</span>
                 </div>
 
                 {/* Live Rank Tag */}
@@ -360,10 +334,9 @@ export default function Display() {
                 </div>
               </div>
 
-              {/* House Identity & Title */}
+              {/* House Identity - House Name ONLY */}
               <div className="house-identity">
-                <h2 className="house-main-title">{houseName}</h2>
-                <div className="house-tagline">{tagline}</div>
+                <h2 className="house-main-title">{house.name}</h2>
               </div>
 
               {/* Holographic Glowing Score Box */}
@@ -375,14 +348,14 @@ export default function Display() {
 
                 <div className="vault-inner-glow"></div>
 
-                <RollingCounter value={score} color={color} />
+                <RollingCounter value={score} />
 
                 <div className="points-label">POINTS</div>
               </div>
 
               {/* Bottom Cyber Laser Accent */}
               <div className="card-bottom-laser"></div>
-            </div>
+            </motion.div>
           );
         })}
 
@@ -390,16 +363,6 @@ export default function Display() {
         <div className="cyber-crosshair-v"></div>
         <div className="cyber-crosshair-h"></div>
       </main>
-
-      {/* Broadcast Ticker Footer */}
-      <footer className="broadcast-footer-ticker">
-        <div className="ticker-label">STATUS</div>
-        <div className="ticker-marquee">
-          <span>
-            ⚡ TOURNAMENT LIVE &bull; SCORES SYNCED IN REAL-TIME &bull; OPEN <strong>/admin</strong> ON MOBILE OR LAPTOP TO CONTROL &bull; PRESS <strong>F11</strong> FOR STADIUM FULLSCREEN
-          </span>
-        </div>
-      </footer>
     </div>
   );
 }

@@ -30,7 +30,6 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   user-select: none;
   font-family: var(--font-rajdhani);
 }
@@ -44,12 +43,12 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1vh 2.5vw;
-  background: linear-gradient(180deg, rgba(8, 12, 24, 0.95) 0%, rgba(5, 7, 14, 0.7) 100%);
-  backdrop-filter: blur(12px);
+  padding: 1.2vh 2.5vw;
+  background: linear-gradient(180deg, rgba(8, 12, 24, 0.95) 0%, rgba(5, 7, 14, 0.75) 100%);
+  backdrop-filter: blur(14px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.6);
-  min-height: 8.5vh;
+  min-height: 9vh;
 }
 
 /* Header Left - Live Radar & Clock */
@@ -65,7 +64,7 @@
   gap: 8px;
   background: rgba(239, 71, 58, 0.15);
   border: 1px solid rgba(239, 71, 58, 0.4);
-  padding: 6px 14px;
+  padding: 6px 16px;
   border-radius: 20px;
 }
 
@@ -97,9 +96,9 @@
 
 .live-text {
   font-family: var(--font-orbitron);
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-weight: 800;
-  letter-spacing: 2px;
+  letter-spacing: 3px;
   color: #ff7675;
 }
 
@@ -110,7 +109,7 @@
 
 .time-display {
   font-family: var(--font-orbitron);
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   font-weight: 700;
   color: #ffffff;
   letter-spacing: 1px;
@@ -132,35 +131,11 @@
   text-align: center;
 }
 
-.event-title-badge {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-family: var(--font-orbitron);
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 4px;
-  color: #ffd700;
-  text-transform: uppercase;
-  margin-bottom: 2px;
-}
-
-.sparkle-icon {
-  color: #ffd700;
-  animation: sparkle-spin 3s linear infinite;
-}
-
-@keyframes sparkle-spin {
-  0% { transform: rotate(0deg) scale(0.9); }
-  50% { transform: rotate(180deg) scale(1.1); }
-  100% { transform: rotate(360deg) scale(0.9); }
-}
-
 .competition-title {
   font-family: var(--font-orbitron);
-  font-size: clamp(1.2rem, 2.2vh, 1.8rem);
+  font-size: clamp(1.4rem, 2.6vh, 2.2rem);
   font-weight: 900;
-  letter-spacing: clamp(4px, 0.8vw, 10px);
+  letter-spacing: clamp(6px, 1vw, 14px);
   text-transform: uppercase;
   background: linear-gradient(90deg, #ffffff 0%, #a4b0be 50%, #ffffff 100%);
   -webkit-background-clip: text;
@@ -169,20 +144,49 @@
   line-height: 1.1;
 }
 
-.competition-subtitle {
-  font-size: clamp(0.7rem, 1.1vh, 0.85rem);
-  font-weight: 600;
-  letter-spacing: 3px;
-  color: #57606f;
-  text-transform: uppercase;
-  margin-top: 2px;
-}
-
-/* Header Right - Actions */
+/* Header Right - Profile Avatar of Man */
 .header-right {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 14px;
+}
+
+.profile-container {
+  position: relative;
+  width: clamp(42px, 5vh, 52px);
+  height: clamp(42px, 5vh, 52px);
+  border-radius: 50%;
+  padding: 2px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.05));
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.8), 0 0 10px rgba(255, 255, 255, 0.15);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.profile-container:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+.profile-avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  filter: grayscale(100%) contrast(110%);
+  display: block;
+}
+
+.profile-badge-ring {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  background-color: #38ef7d;
+  border: 2px solid #060913;
+  border-radius: 50%;
+  box-shadow: 0 0 6px #38ef7d;
 }
 
 .control-icon-btn {
@@ -197,15 +201,13 @@
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s ease;
-  text-decoration: none;
 }
 
 .control-icon-btn:hover {
   background: rgba(255, 255, 255, 0.15);
   color: #ffffff;
   border-color: rgba(255, 255, 255, 0.3);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  transform: scale(1.05);
 }
 
 /* =========================================================
@@ -218,8 +220,8 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
-  gap: clamp(12px, 1.8vh, 24px) clamp(16px, 2vw, 32px);
-  padding: clamp(10px, 1.5vh, 20px) clamp(16px, 2.5vw, 36px);
+  gap: clamp(14px, 2.2vh, 30px) clamp(18px, 2.4vw, 36px);
+  padding: clamp(14px, 2vh, 26px) clamp(18px, 2.5vw, 40px);
   min-height: 0;
 }
 
@@ -229,19 +231,18 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background: rgba(10, 14, 26, 0.65);
+  background: rgba(10, 14, 26, 0.68);
   backdrop-filter: blur(16px);
-  border-radius: clamp(14px, 2vh, 22px);
-  padding: clamp(12px, 1.8vh, 22px) clamp(16px, 2vw, 26px);
+  border-radius: clamp(16px, 2.2vh, 24px);
+  padding: clamp(14px, 2vh, 24px) clamp(18px, 2.2vw, 28px);
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), inset 0 0 30px rgba(0, 0, 0, 0.4);
   overflow: hidden;
-  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
   min-height: 0;
 }
 
 .cyber-house-card:hover {
-  transform: translateY(-3px) scale(1.008);
   box-shadow: 0 20px 45px rgba(0, 0, 0, 0.8), 0 0 30px var(--house-glow);
   border-color: var(--house-color);
 }
@@ -293,20 +294,20 @@
   gap: 8px;
   background: rgba(0, 0, 0, 0.45);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 4px 12px;
+  padding: 4px 14px;
   border-radius: 20px;
 }
 
 .house-crest-icon {
-  width: clamp(18px, 2.2vh, 24px);
-  height: clamp(18px, 2.2vh, 24px);
+  width: clamp(18px, 2.4vh, 26px);
+  height: clamp(18px, 2.4vh, 26px);
   color: var(--house-color);
   filter: drop-shadow(0 0 8px var(--house-color));
 }
 
 .house-code-tag {
   font-family: var(--font-orbitron);
-  font-size: clamp(0.7rem, 1.1vh, 0.85rem);
+  font-size: clamp(0.75rem, 1.2vh, 0.9rem);
   font-weight: 700;
   color: #a4b0be;
   letter-spacing: 1px;
@@ -318,10 +319,10 @@
   align-items: center;
   gap: 6px;
   font-family: var(--font-orbitron);
-  font-size: clamp(0.7rem, 1.1vh, 0.85rem);
+  font-size: clamp(0.75rem, 1.2vh, 0.9rem);
   font-weight: 800;
   letter-spacing: 1.5px;
-  padding: 4px 14px;
+  padding: 5px 16px;
   border-radius: 20px;
   text-transform: uppercase;
 }
@@ -366,30 +367,22 @@
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-/* House Identity */
+/* House Identity - House Name Only */
 .house-identity {
   position: relative;
   z-index: 5;
-  margin: clamp(4px, 0.8vh, 10px) 0;
+  margin: clamp(4px, 1vh, 12px) 0;
+  text-align: center;
 }
 
 .house-main-title {
   font-family: var(--font-orbitron);
-  font-size: clamp(1.6rem, 3.6vh, 2.6rem);
+  font-size: clamp(2rem, 4.4vh, 3.2rem);
   font-weight: 900;
-  letter-spacing: 2px;
+  letter-spacing: 4px;
   color: var(--house-color);
   text-shadow: 0 0 20px var(--house-glow);
   line-height: 1;
-}
-
-.house-tagline {
-  font-size: clamp(0.7rem, 1.2vh, 0.95rem);
-  font-weight: 700;
-  letter-spacing: 2px;
-  color: #747d8c;
-  text-transform: uppercase;
-  margin-top: 2px;
 }
 
 /* =========================================================
@@ -404,9 +397,9 @@
   justify-content: center;
   background: rgba(0, 0, 0, 0.65);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: clamp(12px, 1.6vh, 18px);
-  padding: clamp(8px, 1.2vh, 16px) 20px;
-  height: clamp(90px, 18vh, 160px);
+  border-radius: clamp(14px, 1.8vh, 20px);
+  padding: clamp(10px, 1.4vh, 18px) 20px;
+  height: clamp(100px, 20vh, 180px);
   box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 0, 0, 0.4);
   overflow: hidden;
 }
@@ -437,7 +430,7 @@
 /* Rolling Number Digit */
 .score-digit {
   font-family: var(--font-teko);
-  font-size: clamp(4.5rem, 14vh, 9rem);
+  font-size: clamp(5.5rem, 16vh, 10.5rem);
   font-weight: 700;
   line-height: 0.85;
   color: #ffffff;
@@ -458,11 +451,11 @@
 
 .points-label {
   font-family: var(--font-orbitron);
-  font-size: clamp(0.65rem, 1vh, 0.8rem);
+  font-size: clamp(0.7rem, 1.1vh, 0.85rem);
   font-weight: 800;
   letter-spacing: 4px;
   color: #57606f;
-  margin-top: 2px;
+  margin-top: 4px;
 }
 
 /* Bottom Laser Strip */
@@ -481,8 +474,8 @@
    ========================================================= */
 .cyber-crosshair-v {
   position: absolute;
-  top: 8%;
-  bottom: 8%;
+  top: 6%;
+  bottom: 6%;
   left: 50%;
   width: 1px;
   background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.12) 50%, transparent);
@@ -492,8 +485,8 @@
 
 .cyber-crosshair-h {
   position: absolute;
-  left: 6%;
-  right: 6%;
+  left: 5%;
+  right: 5%;
   top: 50%;
   height: 1px;
   background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.12) 50%, transparent);
@@ -534,64 +527,9 @@
     opacity: var(--drop-opacity, 0.8);
   }
   100% {
-    transform: translateY(60vh);
+    transform: translateY(65vh);
     opacity: 0;
   }
-}
-
-/* =========================================================
-   BROADCAST TICKER FOOTER
-   ========================================================= */
-.broadcast-footer-ticker {
-  position: relative;
-  z-index: 20;
-  display: flex;
-  align-items: center;
-  background: rgba(5, 7, 14, 0.95);
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  height: 4.5vh;
-  min-height: 28px;
-  overflow: hidden;
-}
-
-.ticker-label {
-  background: #ef473a;
-  color: #ffffff;
-  font-family: var(--font-orbitron);
-  font-size: 0.75rem;
-  font-weight: 800;
-  letter-spacing: 2px;
-  padding: 0 16px;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  z-index: 2;
-  box-shadow: 4px 0 15px rgba(0, 0, 0, 0.5);
-}
-
-.ticker-marquee {
-  flex: 1;
-  white-space: nowrap;
-  overflow: hidden;
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: #a4b0be;
-  letter-spacing: 1px;
-}
-
-.ticker-marquee span {
-  display: inline-block;
-  padding-left: 100%;
-  animation: marquee 28s linear infinite;
-}
-
-.ticker-marquee strong {
-  color: #ffd700;
-}
-
-@keyframes marquee {
-  0% { transform: translate(0, 0); }
-  100% { transform: translate(-100%, 0); }
 }
 
 /* =========================================================
