@@ -286,12 +286,8 @@ export default function Display() {
           <h1 className="competition-title">INTER-HOUSE CHAMPIONSHIP</h1>
         </div>
 
-        {/* Top Right: Profile of Black & White Photo of Man */}
+        {/* Top Right: Fullscreen Toggle */}
         <div className="header-right">
-          <div className="profile-container" title="Chief Referee / Official Profile">
-            <img src="/avatar.jpg" alt="Profile" className="profile-avatar-img" />
-            <div className="profile-badge-ring"></div>
-          </div>
           <button className="control-icon-btn fullscreen-btn" onClick={toggleFullscreen} title="Toggle Fullscreen (F11)">
             {isFullscreen ? <Minimize size={18} /> : <Maximize size={18} />}
           </button>
