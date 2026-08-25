@@ -1,0 +1,120 @@
+.admin-container {
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+  font-family: 'Inter', sans-serif;
+  color: #fff;
+}
+
+.admin-container h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.admin-container p {
+  text-align: center;
+  color: #aaa;
+  margin-bottom: 3rem;
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.admin-card {
+  background: #222;
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-left: 5px solid transparent;
+}
+
+.admin-card.yellow { border-left-color: #ffd700; }
+.admin-card.blue { border-left-color: #0052d4; }
+.admin-card.green { border-left-color: #38ef7d; }
+.admin-card.red { border-left-color: #ef473a; }
+
+.admin-card h3 {
+  margin: 0 0 1.5rem 0;
+  font-size: 1.8rem;
+  letter-spacing: 1px;
+}
+
+.score-control {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.score-control button {
+  background: #444;
+  border: none;
+  color: white;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.score-control button:hover {
+  background: #555;
+}
+
+.current-score {
+  font-size: 3rem;
+  font-weight: bold;
+  width: 80px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.score-control-large {
+  display: flex;
+  gap: 1rem;
+}
+
+.score-control-large button {
+  background: #333;
+  border: 1px solid #555;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.2s;
+}
+
+.score-control-large button:hover {
+  background: #444;
+  border-color: #777;
+}
+
+.admin-actions {
+  display: flex;
+  justify-content: center;
+}
+
+.reset-btn {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.2s;
+}
+
+.reset-btn:hover {
+  background: #c82333;
+}
