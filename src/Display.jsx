@@ -2,10 +2,10 @@ import { useState, useEffect, useRef } from 'react';
 import './Scoreboard.css';
 
 const DEFAULT_SCORES = {
-  yellow: 0,
-  blue: 0,
-  green: 0,
   red: 0,
+  blue: 0,
+  yellow: 0,
+  green: 0,
 };
 
 function AnimatedNumber({ value, className }) {
@@ -21,7 +21,7 @@ function AnimatedNumber({ value, className }) {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
       timeoutRef.current = setTimeout(() => {
         setIsUpdating(false);
-      }, 300); // flash duration
+      }, 300);
     }
   }, [value, displayValue]);
 
@@ -52,66 +52,52 @@ function Display() {
   }, []);
 
   return (
-    <div className="broadcast-container">
+    <div className="fullscreen-container">
       {/* Background Graphic Elements */}
       <div className="bg-pattern"></div>
       <div className="bg-glow"></div>
       
-      <div className="scoreboard-wrapper">
+      <div className="board-header">
+        <h1>INTER-HOUSE SCORE</h1>
+      </div>
+
+      <div className="grid-container">
         
-        {/* Header Ribbon */}
-        <div className="header-ribbon">
-          <div className="header-text">INTER-HOUSE CHAMPIONSHIP</div>
+        {/* Top Left: RED */}
+        <div className="grid-cell red-cell">
+          <div className="house-name">RED</div>
+          <div className="score-box">
+             <AnimatedNumber value={scores.red || 0} className="score-value" />
+          </div>
         </div>
 
-        {/* Main Score Area */}
-        <div className="teams-container">
-          
-          <div className="team-panel yellow-team">
-            <div className="team-name">YELLOW</div>
-            <div className="score-box">
-              <AnimatedNumber value={scores.yellow} className="score-value" />
-            </div>
-            <div className="accent-bar"></div>
+        {/* Top Right: BLUE */}
+        <div className="grid-cell blue-cell">
+          <div className="house-name">BLUE</div>
+          <div className="score-box">
+             <AnimatedNumber value={scores.blue || 0} className="score-value" />
           </div>
-
-          <div className="team-panel blue-team">
-             <div className="team-name">BLUE</div>
-             <div className="score-box">
-               <AnimatedNumber value={scores.blue} className="score-value" />
-             </div>
-             <div className="accent-bar"></div>
-          </div>
-
-          {/* Central Divider / Logo Area */}
-          <div className="center-divider">
-            <div className="vs-badge">VS</div>
-          </div>
-
-          <div className="team-panel green-team">
-             <div className="score-box">
-               <AnimatedNumber value={scores.green} className="score-value" />
-             </div>
-             <div className="team-name">GREEN</div>
-             <div className="accent-bar"></div>
-          </div>
-
-          <div className="team-panel red-team">
-             <div className="score-box">
-               <AnimatedNumber value={scores.red} className="score-value" />
-             </div>
-             <div className="team-name">RED</div>
-             <div className="accent-bar"></div>
-          </div>
-          
-        </div>
-        
-        {/* Footer Ribbon */}
-        <div className="footer-ribbon">
-          <div className="footer-content">LIVE</div>
-          <div className="pulsing-dot"></div>
         </div>
 
+        {/* Bottom Left: YELLOW */}
+        <div className="grid-cell yellow-cell">
+          <div className="house-name">YELLOW</div>
+          <div className="score-box">
+             <AnimatedNumber value={scores.yellow || 0} className="score-value" />
+          </div>
+        </div>
+
+        {/* Bottom Right: GREEN */}
+        <div className="grid-cell green-cell">
+          <div className="house-name">GREEN</div>
+          <div className="score-box">
+             <AnimatedNumber value={scores.green || 0} className="score-value" />
+          </div>
+        </div>
+
+        {/* Crosshair Dividers */}
+        <div className="divider-vertical"></div>
+        <div className="divider-horizontal"></div>
       </div>
     </div>
   );
