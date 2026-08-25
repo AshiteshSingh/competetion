@@ -114,10 +114,15 @@
 }
 
 /* Coloring the house names to match the sketch */
-.red-cell .house-name { color: #ff5252; text-shadow: 0 0 15px rgba(255,82,82,0.4); }
-.blue-cell .house-name { color: #4facfe; text-shadow: 0 0 15px rgba(79,172,254,0.4); }
-.yellow-cell .house-name { color: #ffeaa7; text-shadow: 0 0 15px rgba(255,234,167,0.4); }
-.green-cell .house-name { color: #55efc4; text-shadow: 0 0 15px rgba(85,239,196,0.4); }
+.red-cell .house-name { color: #ff5252; animation: breath-text-red 3s infinite alternate ease-in-out; }
+.blue-cell .house-name { color: #4facfe; animation: breath-text-blue 3s infinite alternate ease-in-out; animation-delay: 0.5s; }
+.yellow-cell .house-name { color: #ffeaa7; animation: breath-text-yellow 3s infinite alternate ease-in-out; animation-delay: 1s; }
+.green-cell .house-name { color: #55efc4; animation: breath-text-green 3s infinite alternate ease-in-out; animation-delay: 1.5s; }
+
+@keyframes breath-text-red { 0% { text-shadow: 0 0 10px rgba(255,82,82,0.3); } 100% { text-shadow: 0 0 25px rgba(255,82,82,0.8); } }
+@keyframes breath-text-blue { 0% { text-shadow: 0 0 10px rgba(79,172,254,0.3); } 100% { text-shadow: 0 0 25px rgba(79,172,254,0.8); } }
+@keyframes breath-text-yellow { 0% { text-shadow: 0 0 10px rgba(255,234,167,0.3); } 100% { text-shadow: 0 0 25px rgba(255,234,167,0.8); } }
+@keyframes breath-text-green { 0% { text-shadow: 0 0 10px rgba(85,239,196,0.3); } 100% { text-shadow: 0 0 25px rgba(85,239,196,0.8); } }
 
 .score-box {
   background: rgba(0,0,0,0.6);
@@ -132,10 +137,15 @@
 }
 
 /* Giving the boxes a glowing border to match the hand-drawn teal boxes */
-.red-cell .score-box { border-color: rgba(239, 71, 58, 0.4); box-shadow: inset 0 0 20px rgba(239, 71, 58, 0.1); }
-.blue-cell .score-box { border-color: rgba(0, 82, 212, 0.4); box-shadow: inset 0 0 20px rgba(0, 82, 212, 0.1); }
-.yellow-cell .score-box { border-color: rgba(255, 215, 0, 0.4); box-shadow: inset 0 0 20px rgba(255, 215, 0, 0.1); }
-.green-cell .score-box { border-color: rgba(56, 239, 125, 0.4); box-shadow: inset 0 0 20px rgba(56, 239, 125, 0.1); }
+.red-cell .score-box { border-color: rgba(239, 71, 58, 0.4); animation: breath-box-red 3s infinite alternate ease-in-out; }
+.blue-cell .score-box { border-color: rgba(0, 82, 212, 0.4); animation: breath-box-blue 3s infinite alternate ease-in-out; animation-delay: 0.5s; }
+.yellow-cell .score-box { border-color: rgba(255, 215, 0, 0.4); animation: breath-box-yellow 3s infinite alternate ease-in-out; animation-delay: 1s; }
+.green-cell .score-box { border-color: rgba(56, 239, 125, 0.4); animation: breath-box-green 3s infinite alternate ease-in-out; animation-delay: 1.5s; }
+
+@keyframes breath-box-red { 0% { box-shadow: inset 0 0 10px rgba(239, 71, 58, 0.1), 0 0 5px rgba(239, 71, 58, 0.2); border-color: rgba(239, 71, 58, 0.3); } 100% { box-shadow: inset 0 0 30px rgba(239, 71, 58, 0.3), 0 0 15px rgba(239, 71, 58, 0.5); border-color: rgba(239, 71, 58, 0.7); } }
+@keyframes breath-box-blue { 0% { box-shadow: inset 0 0 10px rgba(0, 82, 212, 0.1), 0 0 5px rgba(0, 82, 212, 0.2); border-color: rgba(0, 82, 212, 0.3); } 100% { box-shadow: inset 0 0 30px rgba(0, 82, 212, 0.3), 0 0 15px rgba(0, 82, 212, 0.5); border-color: rgba(0, 82, 212, 0.7); } }
+@keyframes breath-box-yellow { 0% { box-shadow: inset 0 0 10px rgba(255, 215, 0, 0.1), 0 0 5px rgba(255, 215, 0, 0.2); border-color: rgba(255, 215, 0, 0.3); } 100% { box-shadow: inset 0 0 30px rgba(255, 215, 0, 0.3), 0 0 15px rgba(255, 215, 0, 0.5); border-color: rgba(255, 215, 0, 0.7); } }
+@keyframes breath-box-green { 0% { box-shadow: inset 0 0 10px rgba(56, 239, 125, 0.1), 0 0 5px rgba(56, 239, 125, 0.2); border-color: rgba(56, 239, 125, 0.3); } 100% { box-shadow: inset 0 0 30px rgba(56, 239, 125, 0.3), 0 0 15px rgba(56, 239, 125, 0.5); border-color: rgba(56, 239, 125, 0.7); } }
 
 .score-value {
   font-size: 16vh;
