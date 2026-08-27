@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Sparkles, ExternalLink, Volume2, VolumeX, RotateCcw } from 'lucide-react';
 import { HouseIcon } from './HouseIcons';
 import { soundFX } from './sound';
+import mqtt from 'mqtt';
 import './Admin.css';
 
 const DEFAULT_SCORES = {
@@ -23,12 +24,17 @@ export default function Admin() {
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [manualInputs, setManualInputs] = useState({ red: '', blue: '', yellow: '', green: '' });
   const channelRef = useRef(null);
+  const mqttClientRef = useRef(null);
 
   useEffect(() => {
     // Setup BroadcastChannel
     if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
       channelRef.current = new BroadcastChannel('scoreboard_sync_channel');
     }
+
+    // Setup MQTT for cross-device remote sync
+    const client = mqtt.connect('wss://broker.emqx.io:8084/mqtt');
+    mqttClientRef.current = client;
 
     try {
       const savedScores = localStorage.getItem('houseScores');
@@ -46,6 +52,7 @@ export default function Admin() {
 
     return () => {
       if (channelRef.current) channelRef.current.close();
+      if (mqttClientRef.current) mqttClientRef.current.end();
     };
   }, []);
 
@@ -54,6 +61,9 @@ export default function Admin() {
     localStorage.setItem('houseScores', JSON.stringify(newScores));
     if (channelRef.current) {
       channelRef.current.postMessage({ type: 'UPDATE_SCORES', scores: newScores });
+    }
+    if (mqttClientRef.current?.connected) {
+      mqttClientRef.current.publish('tau-scoreboard-sync-unique-12345', JSON.stringify({ type: 'UPDATE_SCORES', scores: newScores }));
     }
   };
 
@@ -82,6 +92,9 @@ export default function Admin() {
     localStorage.setItem('triggerConfetti', String(Date.now()));
     if (channelRef.current) {
       channelRef.current.postMessage({ type: 'CONFETTI' });
+    }
+    if (mqttClientRef.current?.connected) {
+      mqttClientRef.current.publish('tau-scoreboard-sync-unique-12345', JSON.stringify({ type: 'CONFETTI' }));
     }
     if (soundEnabled) soundFX.playCelebration();
   };

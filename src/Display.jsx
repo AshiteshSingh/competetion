@@ -5,6 +5,7 @@ import { Trophy, Crown, Maximize, Minimize } from 'lucide-react';
 import BackgroundCanvas from './BackgroundCanvas';
 import { HouseIcon } from './HouseIcons';
 import { soundFX } from './sound';
+import mqtt from 'mqtt';
 import './Scoreboard.css';
 
 const DEFAULT_SCORES = {
@@ -124,7 +125,7 @@ export default function Display() {
   useEffect(() => {
     loadScores();
 
-    // Setup BroadcastChannel for 0ms cross-window communication
+    // Setup BroadcastChannel for 0ms cross-window communication (local)
     if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
       channelRef.current = new BroadcastChannel('scoreboard_sync_channel');
       channelRef.current.onmessage = (event) => {
@@ -135,6 +136,25 @@ export default function Display() {
         }
       };
     }
+
+    // Setup MQTT for cross-device remote communication (internet)
+    const mqttClient = mqtt.connect('wss://broker.emqx.io:8084/mqtt');
+    mqttClient.on('connect', () => {
+      mqttClient.subscribe('tau-scoreboard-sync-unique-12345');
+    });
+    mqttClient.on('message', (topic, message) => {
+      try {
+        const data = JSON.parse(message.toString());
+        if (data.type === 'UPDATE_SCORES') {
+          setScores(data.scores);
+          localStorage.setItem('houseScores', JSON.stringify(data.scores));
+        } else if (data.type === 'CONFETTI') {
+          triggerVictoryConfetti();
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    });
 
     const handleStorage = (e) => {
       if (e.key === 'houseScores' && e.newValue) {
@@ -149,6 +169,7 @@ export default function Display() {
     return () => {
       window.removeEventListener('storage', handleStorage);
       if (channelRef.current) channelRef.current.close();
+      mqttClient.end();
     };
   }, []);
 
