@@ -12,148 +12,167 @@ export default function BackgroundCanvas() {
     let width = (canvas.width = window.innerWidth);
     let height = (canvas.height = window.innerHeight);
 
-    const handleResize = () => {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
-    };
-    window.addEventListener('resize', handleResize);
+    // ── Static off-screen background (drawn only on resize) ──────────────────
+    const bgCanvas = document.createElement('canvas');
+    const bgCtx = bgCanvas.getContext('2d');
 
-    // Particles system - Solarized Dark Palette
-    const particleCount = 70;
-    const particles = [];
-    const colors = [
-      'rgba(220, 50, 47, 0.7)',   // Solarized Red
-      'rgba(38, 139, 210, 0.7)',  // Solarized Blue
-      'rgba(181, 137, 0, 0.7)',   // Solarized Yellow
-      'rgba(133, 153, 0, 0.7)',   // Solarized Green
-      'rgba(42, 161, 152, 0.7)',  // Solarized Cyan
-    ];
+    const buildStaticBackground = () => {
+      bgCanvas.width = width;
+      bgCanvas.height = height;
 
-    for (let i = 0; i < particleCount; i++) {
-      particles.push({
-        x: Math.random() * width,
-        y: Math.random() * height,
-        radius: Math.random() * 2.5 + 0.8,
-        color: colors[Math.floor(Math.random() * colors.length)],
-        vx: (Math.random() - 0.5) * 0.6,
-        vy: (Math.random() - 0.5) * 0.6,
-        pulseSpeed: 0.02 + Math.random() * 0.03,
-        alpha: Math.random() * 0.7 + 0.3,
-        baseAlpha: Math.random() * 0.5 + 0.3,
-      });
-    }
-
-    let time = 0;
-
-    const render = () => {
-      time += 0.015;
-      ctx.clearRect(0, 0, width, height);
-
-      // Solarized Dark Base03 (#002b36) to Base02 (#073642) background gradient
-      const bgGrad = ctx.createRadialGradient(
-        width / 2,
-        height / 2,
-        100,
-        width / 2,
-        height / 2,
-        Math.max(width, height) * 0.8
+      // Base gradient
+      const bgGrad = bgCtx.createRadialGradient(
+        width / 2, height / 2, 100,
+        width / 2, height / 2, Math.max(width, height) * 0.8
       );
       bgGrad.addColorStop(0, '#073642');
       bgGrad.addColorStop(0.5, '#002b36');
       bgGrad.addColorStop(1, '#001e26');
-      ctx.fillStyle = bgGrad;
-      ctx.fillRect(0, 0, width, height);
+      bgCtx.fillStyle = bgGrad;
+      bgCtx.fillRect(0, 0, width, height);
 
-      // 4 Ambient Solarized Corner Flares (matching Red, Blue, Yellow, Green houses)
-      // Top-Left (RED: #dc322f)
-      const redGlow = ctx.createRadialGradient(0, 0, 10, 0, 0, width * 0.45);
-      redGlow.addColorStop(0, 'rgba(220, 50, 47, 0.16)');
-      redGlow.addColorStop(1, 'rgba(220, 50, 47, 0)');
-      ctx.fillStyle = redGlow;
-      ctx.fillRect(0, 0, width * 0.5, height * 0.5);
+      // 4 house corner flares — static, drawn once
+      const corners = [
+        { x: 0,     y: 0,      color: 'rgba(220, 50, 47,  0.13)' },  // Red  TL
+        { x: width, y: 0,      color: 'rgba(38, 139, 210, 0.14)' },  // Blue TR
+        { x: 0,     y: height, color: 'rgba(181, 137, 0,  0.12)' },  // Yellow BL
+        { x: width, y: height, color: 'rgba(133, 153, 0,  0.12)' },  // Green BR
+      ];
+      corners.forEach(({ x, y, color }) => {
+        const r = width * 0.45;
+        const grad = bgCtx.createRadialGradient(x, y, 10, x, y, r);
+        grad.addColorStop(0, color);
+        grad.addColorStop(1, 'rgba(0,0,0,0)');
+        bgCtx.fillStyle = grad;
+        bgCtx.fillRect(0, 0, width, height);
+      });
 
-      // Top-Right (BLUE: #268bd2)
-      const blueGlow = ctx.createRadialGradient(width, 0, 10, width, 0, width * 0.45);
-      blueGlow.addColorStop(0, 'rgba(38, 139, 210, 0.18)');
-      blueGlow.addColorStop(1, 'rgba(38, 139, 210, 0)');
-      ctx.fillStyle = blueGlow;
-      ctx.fillRect(width * 0.5, 0, width * 0.5, height * 0.5);
-
-      // Bottom-Left (YELLOW: #b58900)
-      const yellowGlow = ctx.createRadialGradient(0, height, 10, 0, height, width * 0.45);
-      yellowGlow.addColorStop(0, 'rgba(181, 137, 0, 0.15)');
-      yellowGlow.addColorStop(1, 'rgba(181, 137, 0, 0)');
-      ctx.fillStyle = yellowGlow;
-      ctx.fillRect(0, height * 0.5, width * 0.5, height * 0.5);
-
-      // Bottom-Right (GREEN: #859900)
-      const greenGlow = ctx.createRadialGradient(width, height, 10, width, height, width * 0.45);
-      greenGlow.addColorStop(0, 'rgba(133, 153, 0, 0.16)');
-      greenGlow.addColorStop(1, 'rgba(133, 153, 0, 0)');
-      ctx.fillStyle = greenGlow;
-      ctx.fillRect(width * 0.5, height * 0.5, width * 0.5, height * 0.5);
-
-      // Subtle Solarized Base01 grid lines
-      ctx.strokeStyle = 'rgba(88, 110, 117, 0.08)';
-      ctx.lineWidth = 1;
-      const gridSize = 45;
-      for (let x = 0; x < width; x += gridSize) {
-        ctx.beginPath();
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, height);
-        ctx.stroke();
+      // Grid lines — drawn once as a single path batch
+      bgCtx.strokeStyle = 'rgba(88, 110, 117, 0.07)';
+      bgCtx.lineWidth = 1;
+      const gridSize = 50;
+      bgCtx.beginPath();
+      for (let x = 0; x <= width; x += gridSize) {
+        bgCtx.moveTo(x, 0);
+        bgCtx.lineTo(x, height);
       }
-      for (let y = 0; y < height; y += gridSize) {
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(width, y);
-        ctx.stroke();
+      for (let y = 0; y <= height; y += gridSize) {
+        bgCtx.moveTo(0, y);
+        bgCtx.lineTo(width, y);
       }
+      bgCtx.stroke();
+    };
 
-      // Draw and connect floating energy particles
+    buildStaticBackground();
+
+    const handleResize = () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+      buildStaticBackground();
+    };
+    window.addEventListener('resize', handleResize);
+
+    // ── Particles — reduced count, no shadowBlur ──────────────────────────────
+    const PARTICLE_COUNT = 40; // was 70
+    const CONNECT_DIST = 90;   // was 100
+    const colors = [
+      'rgba(220, 50, 47,  0.65)',
+      'rgba(38, 139, 210, 0.65)',
+      'rgba(181, 137, 0,  0.65)',
+      'rgba(133, 153, 0,  0.65)',
+      'rgba(42, 161, 152, 0.65)',
+    ];
+
+    const particles = Array.from({ length: PARTICLE_COUNT }, (_, i) => ({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      radius: Math.random() * 2.2 + 0.8,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      vx: (Math.random() - 0.5) * 0.5,
+      vy: (Math.random() - 0.5) * 0.5,
+      baseAlpha: Math.random() * 0.45 + 0.25,
+    }));
+
+    let time = 0;
+    let lastFrame = 0;
+    const TARGET_FPS = 40; // cap to 40fps — plenty for a background
+    const FRAME_MS  = 1000 / TARGET_FPS;
+
+    const render = (timestamp) => {
+      animationFrameId = requestAnimationFrame(render);
+      const delta = timestamp - lastFrame;
+      if (delta < FRAME_MS) return; // skip frame if too soon
+      lastFrame = timestamp - (delta % FRAME_MS);
+
+      time += 0.015;
+
+      // Stamp pre-baked static background (1 drawImage call)
+      ctx.drawImage(bgCanvas, 0, 0);
+
+      // Move & draw particles
+      // Build simple cell-grid for O(n) neighbour lookup instead of O(n²)
+      const cellSize = CONNECT_DIST;
+      const cols = Math.ceil(width  / cellSize) + 1;
+      const grid = {};
+
       particles.forEach((p, idx) => {
         p.x += p.vx;
         p.y += p.vy;
-
-        if (p.x < 0) p.x = width;
-        if (p.x > width) p.x = 0;
-        if (p.y < 0) p.y = height;
+        if (p.x < 0)      p.x = width;
+        if (p.x > width)  p.x = 0;
+        if (p.y < 0)      p.y = height;
         if (p.y > height) p.y = 0;
 
-        const currentAlpha = p.baseAlpha + Math.sin(time * 2 + idx) * 0.25;
+        const alpha = Math.max(0.08, Math.min(0.95,
+          p.baseAlpha + Math.sin(time * 1.8 + idx) * 0.2
+        ));
 
-        ctx.save();
-        ctx.globalAlpha = Math.max(0.1, Math.min(1, currentAlpha));
+        ctx.globalAlpha = alpha;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
         ctx.fillStyle = p.color;
-        ctx.shadowColor = p.color;
-        ctx.shadowBlur = 10;
         ctx.fill();
-        ctx.restore();
 
-        // Connect nearby particles with glowing filaments
-        for (let j = idx + 1; j < particles.length; j++) {
-          const p2 = particles[j];
-          const dx = p.x - p2.x;
-          const dy = p.y - p2.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 100) {
-            ctx.strokeStyle = p.color;
-            ctx.globalAlpha = (1 - dist / 100) * 0.12;
-            ctx.lineWidth = 0.8;
-            ctx.beginPath();
-            ctx.moveTo(p.x, p.y);
-            ctx.lineTo(p2.x, p2.y);
-            ctx.stroke();
+        // Register in spatial grid
+        const cx = Math.floor(p.x / cellSize);
+        const cy = Math.floor(p.y / cellSize);
+        const key = cx + cy * cols;
+        if (!grid[key]) grid[key] = [];
+        grid[key].push(p);
+      });
+
+      // Connect nearby particles via spatial grid (O(n) average)
+      ctx.lineWidth = 0.7;
+      particles.forEach((p) => {
+        const cx = Math.floor(p.x / cellSize);
+        const cy = Math.floor(p.y / cellSize);
+
+        for (let dx = -1; dx <= 1; dx++) {
+          for (let dy = -1; dy <= 1; dy++) {
+            const neighbors = grid[(cx + dx) + (cy + dy) * cols];
+            if (!neighbors) continue;
+            neighbors.forEach((p2) => {
+              if (p2 === p) return;
+              const ddx = p.x - p2.x;
+              const ddy = p.y - p2.y;
+              const dist = Math.sqrt(ddx * ddx + ddy * ddy);
+              if (dist < CONNECT_DIST) {
+                ctx.globalAlpha = (1 - dist / CONNECT_DIST) * 0.1;
+                ctx.strokeStyle = p.color;
+                ctx.beginPath();
+                ctx.moveTo(p.x, p.y);
+                ctx.lineTo(p2.x, p2.y);
+                ctx.stroke();
+              }
+            });
           }
         }
       });
 
-      animationFrameId = requestAnimationFrame(render);
+      ctx.globalAlpha = 1;
     };
 
-    render();
+    animationFrameId = requestAnimationFrame(render);
 
     return () => {
       window.removeEventListener('resize', handleResize);

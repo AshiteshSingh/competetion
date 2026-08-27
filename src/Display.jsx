@@ -69,19 +69,20 @@ function RollingCounter({ value }) {
 // Glowing Rain / Particle Matrix inside each card
 function EnergyRain({ color }) {
   const particles = useRef(
-    Array.from({ length: 16 }).map((_, i) => ({
+    // Reduced from 16 → 8 per card (64 → 32 total animated elements)
+    Array.from({ length: 8 }).map((_, i) => ({
       id: i,
-      left: `${(i / 16) * 100 + (Math.random() * 4 - 2)}%`,
-      duration: `${1.2 + Math.random() * 1.8}s`,
-      delay: `${Math.random() * 2}s`,
-      opacity: 0.25 + Math.random() * 0.6,
+      left: `${(i / 8) * 100 + (Math.random() * 6 - 3)}%`,
+      duration: `${1.5 + Math.random() * 2}s`,
+      delay: `${Math.random() * 2.5}s`,
+      opacity: 0.2 + Math.random() * 0.45,
       width: `${2 + Math.random() * 2}px`,
-      height: `${18 + Math.random() * 30}px`,
+      height: `${16 + Math.random() * 28}px`,
     }))
   ).current;
 
   return (
-    <div className="energy-rain-layer">
+    <div className="energy-rain-layer" style={{ contain: 'strict', willChange: 'transform' }}>
       {particles.map((p) => (
         <div
           key={p.id}
@@ -94,7 +95,7 @@ function EnergyRain({ color }) {
             width: p.width,
             height: p.height,
             backgroundColor: color,
-            color: color,
+            willChange: 'transform, opacity',
           }}
         />
       ))}
