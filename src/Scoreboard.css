@@ -142,6 +142,18 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
+  gap: 2px;
+}
+
+.school-name {
+  font-family: var(--font-rajdhani);
+  font-size: clamp(0.7rem, 1.3vh, 1rem);
+  font-weight: 700;
+  letter-spacing: clamp(2px, 0.5vw, 5px);
+  text-transform: uppercase;
+  color: var(--solarized-base1);
+  opacity: 0.85;
+  line-height: 1.2;
 }
 
 .competition-title {
@@ -164,6 +176,47 @@
   gap: 14px;
 }
 
+/* School Logo — doubles as fullscreen toggle */
+.logo-fullscreen-btn {
+  position: relative;
+  background: none;
+  border: 2px solid rgba(88, 110, 117, 0.3);
+  border-radius: 14px;
+  padding: 3px;
+  cursor: pointer;
+  transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.logo-fullscreen-btn:hover {
+  border-color: var(--solarized-base1);
+  transform: scale(1.06);
+  box-shadow: 0 0 16px rgba(147, 161, 161, 0.35);
+}
+
+.school-logo-img {
+  width: clamp(42px, 6.5vh, 62px);
+  height: clamp(42px, 6.5vh, 62px);
+  object-fit: contain;
+  border-radius: 10px;
+  display: block;
+}
+
+/* Small fullscreen hint arrow overlay on logo */
+.logo-fs-hint {
+  position: absolute;
+  bottom: 4px;
+  right: 5px;
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+  pointer-events: none;
+}
+
 .control-icon-btn {
   background: rgba(7, 54, 66, 0.6);
   border: 1px solid rgba(88, 110, 117, 0.3);
@@ -173,6 +226,7 @@
   border-radius: 10px;
   display: flex;
   align-items: center;
+
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s ease;

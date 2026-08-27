@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
-import { Trophy, Crown, Maximize, Minimize } from 'lucide-react';
+import { Trophy, Crown } from 'lucide-react';
 import BackgroundCanvas from './BackgroundCanvas';
 import { HouseIcon } from './HouseIcons';
 import { soundFX } from './sound';
@@ -303,15 +303,26 @@ export default function Display() {
           </div>
         </div>
 
-        {/* Top Center: Clean Event Title */}
+        {/* Top Center: School Name + Event Title */}
         <div className="header-center">
+          <p className="school-name">LITTLE FLOWER SCHOOL DHARAMPUR GORAKHPUR</p>
           <h1 className="competition-title">INTER-HOUSE CHAMPIONSHIP</h1>
         </div>
 
-        {/* Top Right: Fullscreen Toggle */}
+        {/* Top Right: School Logo → click to toggle fullscreen */}
         <div className="header-right">
-          <button className="control-icon-btn fullscreen-btn" onClick={toggleFullscreen} title="Toggle Fullscreen (F11)">
-            {isFullscreen ? <Minimize size={18} /> : <Maximize size={18} />}
+          <button
+            className="logo-fullscreen-btn"
+            onClick={toggleFullscreen}
+            title="Click to toggle fullscreen"
+            aria-label="Toggle Fullscreen"
+          >
+            <img
+              src="/images.jpg"
+              alt="Little Flower School Logo"
+              className="school-logo-img"
+            />
+            <span className="logo-fs-hint">{isFullscreen ? '⤡' : '⤢'}</span>
           </button>
         </div>
       </header>
